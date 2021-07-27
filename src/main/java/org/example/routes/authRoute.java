@@ -4,14 +4,13 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.example.controllers.authControllers;
+import org.example.model.loginModel;
 import org.example.model.registerModel;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-/**
- * Root resource (exposed at "myresource" path)
- */
+
 @Path("auth")
 public class authRoute {
 
@@ -34,13 +33,10 @@ public class authRoute {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response loginUser(String email){
-        String password = "123456";
-        System.out.println(email);
-        System.out.println(password);
+    public Response loginUser(loginModel data){
         String code, pass, header;
         try {
-            code = email + ":" + password;
+            code = data.getEmail() + ":" + data.getPassword();
             pass = Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8));
             header = "Basic " + pass;
             return Response.status(200).entity(header).build();
