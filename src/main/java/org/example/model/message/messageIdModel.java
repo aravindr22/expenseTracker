@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.model.message;
 
 public class messageIdModel {
     private String message;

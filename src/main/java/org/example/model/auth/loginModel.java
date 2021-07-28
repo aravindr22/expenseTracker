@@ -1,4 +1,4 @@
-package org.example.model;
+package org.example.model.auth;
 
 public class loginModel {
     private Integer id;

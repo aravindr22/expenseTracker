@@ -5,7 +5,7 @@ import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import org.example.helper.authHelper;
-import org.example.model.messageModel;
+import org.example.model.message.messageModel;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -20,13 +20,13 @@ public class securityFilter implements ContainerRequestFilter {
     private static final String AUTHORIZATION_HEADER_PREFIX = "Basic ";
 
     private static final String SECURED_URL_PREFIX_1 = "auth/logout";
-
-    private static final String UNSECURED_URL_PREFIX_1 = "/";
+    private static final String SECURED_URL_PREFIX_2 = "user";
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
-        if(requestContext.getUriInfo().getPath().contains(SECURED_URL_PREFIX_1)){
+        if(requestContext.getUriInfo().getPath().contains(SECURED_URL_PREFIX_1)
+            || requestContext.getUriInfo().getPath().contains(SECURED_URL_PREFIX_2)){
             List<String> authHeader = requestContext.getHeaders().get(AUTHORIZATION_HEADER_KEY);
             if(authHeader != null && authHeader.size() > 0){
                 try {

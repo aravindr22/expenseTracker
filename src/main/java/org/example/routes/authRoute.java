@@ -7,13 +7,10 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.example.controllers.authControllers;
 import org.example.helper.authHelper;
-import org.example.model.loginModel;
-import org.example.model.messageIdModel;
-import org.example.model.messageModel;
-import org.example.model.registerModel;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import org.example.model.auth.loginModel;
+import org.example.model.message.messageIdModel;
+import org.example.model.message.messageModel;
+import org.example.model.auth.registerModel;
 
 
 @Path("auth")

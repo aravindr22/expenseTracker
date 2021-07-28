@@ -2,9 +2,9 @@ package org.example.controllers;
 
 import org.example.database.dbConnector;
 import org.example.helper.authHelper;
-import org.example.model.loginModel;
-import org.example.model.messageIdModel;
-import org.example.model.registerModel;
+import org.example.model.auth.loginModel;
+import org.example.model.message.messageIdModel;
+import org.example.model.auth.registerModel;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
