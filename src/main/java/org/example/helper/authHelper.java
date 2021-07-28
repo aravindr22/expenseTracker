@@ -5,6 +5,8 @@ import org.example.database.dbConnector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Base64;
+import java.util.StringTokenizer;
 
 public class authHelper {
 
@@ -65,17 +67,31 @@ public class authHelper {
 
             ResultSet resultSet = query.executeQuery();
 
+            con = null;
+            db.disconnectDB();
             if(resultSet.next()){
                 if(resultSet.getString("isloggedin").equals("t")){
                     return true;
                 }
-                return false;
-            } else {
-                return false;
             }
+            return false;
         } catch (Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public Integer decodeAccountID(String authToken){
+        try{
+            authToken = authToken.replaceFirst("Basic ", "");
+            byte[] decodedBytes = Base64.getDecoder().decode(authToken);
+            String decodedString = new String(decodedBytes);
+            StringTokenizer tokenizer = new StringTokenizer(decodedString, ":");
+            String email = tokenizer.nextToken();
+            return Integer.parseInt(tokenizer.nextToken());
+        } catch (Exception e){
+            e.printStackTrace();
+            return -1;
         }
     }
 

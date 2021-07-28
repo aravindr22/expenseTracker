@@ -55,4 +55,24 @@ public class authControllers {
             return new messageIdModel("You Haven't Registered or Credentials are invalid", "");
         }
     }
+
+    public boolean logoutUser(int account_id){
+        try {
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+            PreparedStatement query = con
+                    .prepareStatement("UPDATE useraccounts set isloggedin = 'false' where account_id = ?");
+            query.setInt(1, account_id);
+            int rows = query.executeUpdate();
+            if(rows < 1){
+                return false;
+            }
+            con = null;
+            db.disconnectDB();
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

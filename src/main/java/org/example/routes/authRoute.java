@@ -61,9 +61,20 @@ public class authRoute {
     @Path("/logout")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response logoutUser(){
-        return Response.status(200)
-                .entity("message")
-                .build();
+    public Response logoutUser(@Context HttpHeaders httpHeaders){
+        try {
+            authHelper auth = new authHelper();
+            int account_id = auth.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
+            authControllers authC = new authControllers();
+            authC.logoutUser(account_id);
+            return Response.status(200)
+                    .entity(new messageModel("Logout Successful"))
+                    .build();
+        } catch (Exception e){
+            e.printStackTrace();
+            return Response.status(200)
+                    .entity(new messageModel("Logout Operation Failed"))
+                    .build();
+        }
     }
 }

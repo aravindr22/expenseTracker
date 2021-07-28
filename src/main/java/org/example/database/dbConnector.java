@@ -15,9 +15,9 @@ public class dbConnector {
             Class.forName("org.postgresql.Driver");
             con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/expenseTracker", "postgres", "root");
             if(con != null){
-                System.out.println("Connected");
+//                System.out.println("Connected");
             } else {
-                System.out.println("Not");
+                System.out.println("Not Connected");
             }
         } catch (Exception e){
             e.printStackTrace();
