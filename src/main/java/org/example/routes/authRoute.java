@@ -1,6 +1,8 @@
 package org.example.routes;
 
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.example.controllers.authControllers;
@@ -20,10 +22,9 @@ public class authRoute {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public int test(){
-        authHelper auth = new authHelper();
-        int val = auth.getIDFromDB("test@gmail.com", "123456");
-        return val;
+    public int test(@Context HttpHeaders httpHeaders){
+        System.out.println(httpHeaders.getHeaderString("Authorization"));
+        return 1;
     }
 
     @Path("/register")
@@ -54,6 +55,15 @@ public class authRoute {
         messageIdModel message = auth.loginUser(data);
         return Response.status(200)
                 .entity(message)
+                .build();
+    }
+
+    @Path("/logout")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logoutUser(){
+        return Response.status(200)
+                .entity("message")
                 .build();
     }
 }

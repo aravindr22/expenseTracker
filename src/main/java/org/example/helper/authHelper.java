@@ -5,13 +5,11 @@ import org.example.database.dbConnector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 
 public class authHelper {
 
     public Integer getIDFromDB(String email, String password){
         try {
-            int rows=-1;
             dbConnector db = new dbConnector();
             Connection con = db.con;
             PreparedStatement query = con
@@ -47,10 +45,38 @@ public class authHelper {
             if(rows < 1){
                 return false;
             }
+            con = null;
+            db.disconnectDB();
             return true;
         } catch (Exception e){
             e.printStackTrace();
             return false;
         }
     }
+
+    public boolean checkloggedIn(String email, Integer account_id){
+        try {
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+            PreparedStatement query = con
+                    .prepareStatement("Select isloggedin from useraccounts where account_id=? and email=?");
+            query.setInt(1, account_id);
+            query.setString(2, email);
+
+            ResultSet resultSet = query.executeQuery();
+
+            if(resultSet.next()){
+                if(resultSet.getString("isloggedin").equals("t")){
+                    return true;
+                }
+                return false;
+            } else {
+                return false;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
