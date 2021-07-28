@@ -2,10 +2,14 @@ package org.example.controllers;
 
 import org.example.database.dbConnector;
 import org.example.helper.authHelper;
+import org.example.model.loginModel;
+import org.example.model.messageIdModel;
 import org.example.model.registerModel;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.Base64;
 
 public class authControllers {
 
@@ -31,5 +35,24 @@ public class authControllers {
             return "There is a problem while registering please try again";
         }
         return "The User registered Successfully, Please Log In to continue ";
+    }
+
+    public messageIdModel loginUser(loginModel data){
+        authHelper auth = new authHelper();
+        int account_id = auth.getIDFromDB(data.getEmail().trim(), data.getPassword().trim());
+        if(account_id > 0){
+            if(auth.loginUser(account_id)){
+                String code, pass, header;
+                code = data.getEmail() + ":" + account_id;
+                pass = Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8));
+                header = "Basic " + pass;
+                return new messageIdModel("LoggedIn Succesfully", header);
+            } else  {
+
+                return new messageIdModel("An Error has occured please try again", "");
+            }
+        } else {
+            return new messageIdModel("You Haven't Registered or Credentials are invalid", "");
+        }
     }
 }

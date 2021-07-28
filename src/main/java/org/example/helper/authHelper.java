@@ -35,4 +35,22 @@ public class authHelper {
         }
 
     }
+
+    public boolean loginUser(int account_id){
+        try {
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+            PreparedStatement query = con
+                    .prepareStatement("UPDATE useraccounts set isloggedin = 'true' where account_id = ?");
+            query.setInt(1, account_id);
+            int rows = query.executeUpdate();
+            if(rows < 1){
+                return false;
+            }
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

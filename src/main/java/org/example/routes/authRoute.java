@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.Response;
 import org.example.controllers.authControllers;
 import org.example.helper.authHelper;
 import org.example.model.loginModel;
+import org.example.model.messageIdModel;
 import org.example.model.messageModel;
 import org.example.model.registerModel;
 
@@ -49,18 +50,10 @@ public class authRoute {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response loginUser(loginModel data){
-        String code, pass, header;
-        try {
-            code = data.getEmail() + ":" + data.getPassword();
-            pass = Base64.getEncoder().encodeToString(code.getBytes(StandardCharsets.UTF_8));
-            header = "Basic " + pass;
-            return Response.status(200).entity(header).build();
-            //return header.toString();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        authControllers auth = new authControllers();
+        messageIdModel message = auth.loginUser(data);
         return Response.status(200)
-                .entity("header")
+                .entity(message)
                 .build();
     }
 }
