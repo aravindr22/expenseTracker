@@ -1,6 +1,7 @@
 package org.example.controllers;
 
 import org.example.database.dbConnector;
+import org.example.model.transaction.transactionStatsModel;
 import org.example.model.transaction.transactionViewModel;
 
 import java.sql.Connection;
@@ -87,10 +88,50 @@ public class transactionControllers {
                 return "Oops!!, An error has occurred please try again";
             }
 
+            con = null;
+            db.disconnectDB();
+
             return "Your Transaction Successfully added";
         } catch (Exception e){
             e.printStackTrace();
             return "Oops!!, An error has occurred please try again";
+        }
+    }
+
+    public transactionStatsModel getTransactionStats(Integer account_id){
+        transactionStatsModel data = new transactionStatsModel();
+        try {
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+
+            PreparedStatement ledgerStats = con
+                    .prepareStatement("Select income, expense, balance from ledger where account_id = ?");
+            ledgerStats.setInt(1, account_id);
+
+            ResultSet resultSet = ledgerStats.executeQuery();
+            if(resultSet.next()){
+                data.setIncome(resultSet.getInt("income"));
+                data.setExpense(resultSet.getInt("expense"));
+                data.setBalance(resultSet.getInt("balance"));
+            } else {
+                return data;
+            }
+
+            PreparedStatement countStats = con
+                    .prepareStatement("select count(*) from transaction where account_id = ?");
+            countStats.setInt(1, account_id);
+
+            resultSet = countStats.executeQuery();
+            if(resultSet.next()){
+                data.setTransactionCount(resultSet.getInt("count"));
+            } else {
+                return data;
+            }
+
+            return data;
+        } catch (Exception e){
+            e.printStackTrace();
+            return data;
         }
     }
 }
