@@ -37,6 +37,13 @@ public class transactionRoute {
         return Response.status(Response.Status.ACCEPTED).entity(transactionC.getTransactionStats(account_id)).build();
     }
 
-//    select * from transaction as t inner join transactionview as tv on t.transactionview_id = tv.transactionview_id where account_id = 6 offset 3 limit 3;
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTransaction(@Context HttpHeaders httpHeaders, @QueryParam("page") Integer page){
+        authHelper authH = new authHelper();
+        int account_id = authH.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
+        transactionControllers transactionC = new transactionControllers();
+        return Response.status(200).entity(transactionC.getAllTransactions(account_id, page)).build();
+    }
 
 }

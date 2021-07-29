@@ -1,6 +1,8 @@
 package org.example.controllers;
 
 import org.example.database.dbConnector;
+import org.example.model.transaction.transactionListModel;
+import org.example.model.transaction.transactionModel;
 import org.example.model.transaction.transactionStatsModel;
 import org.example.model.transaction.transactionViewModel;
 
@@ -8,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class transactionControllers {
 
@@ -127,11 +131,51 @@ public class transactionControllers {
             } else {
                 return data;
             }
+            con = null;
+            db.disconnectDB();
 
             return data;
         } catch (Exception e){
             e.printStackTrace();
             return data;
         }
+    }
+
+    public transactionListModel getAllTransactions(Integer account_id, Integer page){
+        try {
+            if(page < 1){
+                page = 0;
+            }
+            String sqlTemplate = "select categoryname, expensetype, amount, description, timestamp from transaction as t inner join transactionview as tv on t.transactionview_id = tv.transactionview_id where account_id = ? offset <offset> limit 5;";
+            int offsetPage = (page-1) * 5;
+            String selectTransactionSql = sqlTemplate.replace("<offset>", new String(String.valueOf(offsetPage)));
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+
+            PreparedStatement getTransactionQuery = con
+                    .prepareStatement(selectTransactionSql);
+            getTransactionQuery.setInt(1, account_id);
+
+            ResultSet resultSet = getTransactionQuery.executeQuery();
+            List<transactionModel> transactionList = new ArrayList<>();
+            int id = 1;
+            while (resultSet.next()){
+                transactionModel txn = new transactionModel();
+                txn.setId(id);
+                txn.setCategoryName(resultSet.getString("categoryname"));
+                txn.setExpenseType(resultSet.getString("expensetype"));
+                txn.setAmount(resultSet.getInt("amount"));
+                txn.setDescription(resultSet.getString("description"));
+                txn.setTimestamp(resultSet.getTimestamp("timestamp"));
+                transactionList.add(txn);
+                id++;
+            }
+
+            return new transactionListModel(page, transactionList);
+
+        } catch (Exception e){
+
+        }
+        return new transactionListModel();
     }
 }
