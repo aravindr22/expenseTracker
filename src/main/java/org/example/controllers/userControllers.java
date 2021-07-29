@@ -47,4 +47,66 @@ public class userControllers {
         }
         return new allCategory();
     }
+
+    public String addIncomeCategory(Integer account_id, String categoryName){
+        try {
+            if(categoryName.trim().length() < 1){
+                return "The category name is not valid name";
+            }
+
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+
+            PreparedStatement insertQuery = con
+                    .prepareStatement("INSERT into incomecategory(account_id, name) values(?, ?)");
+
+            insertQuery.setInt(1,account_id);
+            insertQuery.setString(2, categoryName);
+
+            int rows = insertQuery.executeUpdate();
+
+            con = null;
+            db.disconnectDB();
+            if(rows > 0){
+                return "The category is added Successfully added.";
+            }
+            return "An error has Occurred, Please try again.";
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return "An error has Occurred, Please try again.";
+        }
+    }
+
+    public String addExpenseCategory(Integer account_id, String categoryName){
+        try {
+            if(categoryName.trim().length() < 1){
+                return "The category name is not valid name";
+            }
+
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+
+            PreparedStatement insertQuery = con
+                    .prepareStatement("INSERT into expensecategory(account_id, name) values(?, ?)");
+
+            insertQuery.setInt(1,account_id);
+            insertQuery.setString(2, categoryName);
+
+            int rows = insertQuery.executeUpdate();
+
+            con = null;
+            db.disconnectDB();
+            if(rows > 0){
+                return "The category is added Successfully added.";
+            }
+            return "An error has Occurred, Please try again.";
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return "An error has Occurred, Please try again.";
+        }
+    }
+
 }

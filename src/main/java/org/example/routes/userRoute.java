@@ -1,15 +1,15 @@
 package org.example.routes;
 
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.example.controllers.userControllers;
 import org.example.helper.authHelper;
+import org.example.model.message.messageModel;
 import org.example.model.user.allCategory;
+import org.example.model.user.category;
 
 @Path("/user")
 public class userRoute {
@@ -28,5 +28,29 @@ public class userRoute {
         int account_id = auth.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
         allCategory result = user.getAllCategories(account_id);
         return Response.status(200).entity(result).build();
+    }
+
+    @Path("/incomeCategory")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addIncomeCategory(@Context HttpHeaders httpHeaders, category data){
+        authHelper authH = new authHelper();
+        int account_id = authH.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
+        userControllers userC = new userControllers();
+        String result = userC.addIncomeCategory(account_id, data.getName());
+        return Response.status(Response.Status.ACCEPTED).entity(new messageModel(result)).build();
+    }
+
+    @Path("/expenseCategory")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addExpenseCategory(@Context HttpHeaders httpHeaders, category data){
+        authHelper authH = new authHelper();
+        int account_id = authH.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
+        userControllers userC = new userControllers();
+        String result = userC.addExpenseCategory(account_id, data.getName());
+        return Response.status(Response.Status.ACCEPTED).entity(new messageModel(result)).build();
     }
 }
