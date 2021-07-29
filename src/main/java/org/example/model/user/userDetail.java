@@ -6,13 +6,13 @@ public class userDetail {
     private String name;
     private String email;
     private String dob;
-    private List<String> incomeCategory;
-    private List<String> expenseCategory;
+    private List<category> incomeCategory;
+    private List<category> expenseCategory;
 
     public userDetail() {
     }
 
-    public userDetail(String name, String email, String dob, List<String> incomeCategory, List<String> expenseCategory) {
+    public userDetail(String name, String email, String dob, List<category> incomeCategory, List<category> expenseCategory) {
         this.name = name;
         this.email = email;
         this.dob = dob;
@@ -44,19 +44,19 @@ public class userDetail {
         this.dob = dob;
     }
 
-    public List<String> getIncomeCategory() {
+    public List<category> getIncomeCategory() {
         return incomeCategory;
     }
 
-    public void setIncomeCategory(List<String> incomeCategory) {
+    public void setIncomeCategory(List<category> incomeCategory) {
         this.incomeCategory = incomeCategory;
     }
 
-    public List<String> getExpenseCategory() {
+    public List<category> getExpenseCategory() {
         return expenseCategory;
     }
 
-    public void setExpenseCategory(List<String> expenseCategory) {
+    public void setExpenseCategory(List<category> expenseCategory) {
         this.expenseCategory = expenseCategory;
     }
 }

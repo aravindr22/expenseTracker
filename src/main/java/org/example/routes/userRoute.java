@@ -10,13 +10,19 @@ import org.example.helper.authHelper;
 import org.example.model.message.messageModel;
 import org.example.model.user.allCategory;
 import org.example.model.user.category;
+import org.example.model.user.userDetail;
 
 @Path("/user")
 public class userRoute {
 
     @GET
-    public String test(){
-        return "test";
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response userDetail(@Context HttpHeaders httpHeaders){
+        authHelper authH = new authHelper();
+        int account_id = authH.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
+        userControllers userC = new userControllers();
+        userDetail result = userC.getAllUserData(account_id);
+        return Response.status(200).entity(result).build();
     }
 
     @Path("/categories")

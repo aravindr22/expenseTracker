@@ -3,6 +3,7 @@ package org.example.controllers;
 import org.example.database.dbConnector;
 import org.example.model.user.allCategory;
 import org.example.model.user.category;
+import org.example.model.user.userDetail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -106,6 +107,32 @@ public class userControllers {
         } catch (Exception e){
             e.printStackTrace();
             return "An error has Occurred, Please try again.";
+        }
+    }
+
+    public userDetail getAllUserData(Integer account_id){
+        try {
+            String name = "", email = "", dob = "";
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+
+            PreparedStatement userQuery = con.prepareStatement("Select name, email, dob from useraccounts where account_id = ?");
+            userQuery.setInt(1, account_id);
+
+            allCategory category = getAllCategories(account_id);
+            ResultSet resultSet = userQuery.executeQuery();
+
+            if(resultSet.next()){
+                name = resultSet.getString("name");
+                email = resultSet.getString("email");
+                dob = resultSet.getString("dob");
+            }
+            userDetail userData = new userDetail(name, email, dob, category.getIncomeCategory(), category.getExpenseCategory());
+            return userData;
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return new userDetail();
         }
     }
 
