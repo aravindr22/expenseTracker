@@ -122,6 +122,8 @@ public class userControllers {
             allCategory category = getAllCategories(account_id);
             ResultSet resultSet = userQuery.executeQuery();
 
+            con = null;
+            db.disconnectDB();
             if(resultSet.next()){
                 name = resultSet.getString("name");
                 email = resultSet.getString("email");

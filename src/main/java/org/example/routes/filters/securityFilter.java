@@ -21,12 +21,14 @@ public class securityFilter implements ContainerRequestFilter {
 
     private static final String SECURED_URL_PREFIX_1 = "auth/logout";
     private static final String SECURED_URL_PREFIX_2 = "user";
+    private static final String SECURED_URL_PREFIX_3 = "transaction";
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
 
         if(requestContext.getUriInfo().getPath().contains(SECURED_URL_PREFIX_1)
-            || requestContext.getUriInfo().getPath().contains(SECURED_URL_PREFIX_2)){
+            || requestContext.getUriInfo().getPath().contains(SECURED_URL_PREFIX_2)
+            || requestContext.getUriInfo().getPath().contains(SECURED_URL_PREFIX_3)){
             List<String> authHeader = requestContext.getHeaders().get(AUTHORIZATION_HEADER_KEY);
             if(authHeader != null && authHeader.size() > 0){
                 try {
