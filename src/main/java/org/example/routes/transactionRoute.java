@@ -16,6 +16,36 @@ import java.sql.*;
 @Path("/transaction")
 public class transactionRoute {
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTransaction(@Context HttpHeaders httpHeaders){
+        Integer page = 1;
+        authHelper authH = new authHelper();
+        int account_id = authH.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
+        transactionControllers transactionC = new transactionControllers();
+        return Response.status(200).entity(transactionC.getAllTransactions(account_id, page)).build();
+    }
+
+    @Path("/page")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTransactionByPage(@Context HttpHeaders httpHeaders, @QueryParam("page") Integer page){
+        authHelper authH = new authHelper();
+        int account_id = authH.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
+        transactionControllers transactionC = new transactionControllers();
+        return Response.status(200).entity(transactionC.getAllTransactions(account_id, page)).build();
+    }
+
+    @Path("/category")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTransactionByCategory(@Context HttpHeaders httpHeaders, @QueryParam("category") String category, @QueryParam("page") Integer page){
+        authHelper authH = new authHelper();
+        int account_id = authH.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
+        transactionControllers transactionC = new transactionControllers();
+        return Response.status(200).entity(transactionC.transactionListByCategory(account_id,page,category)).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -37,13 +67,5 @@ public class transactionRoute {
         return Response.status(Response.Status.ACCEPTED).entity(transactionC.getTransactionStats(account_id)).build();
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getTransaction(@Context HttpHeaders httpHeaders, @QueryParam("page") Integer page){
-        authHelper authH = new authHelper();
-        int account_id = authH.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
-        transactionControllers transactionC = new transactionControllers();
-        return Response.status(200).entity(transactionC.getAllTransactions(account_id, page)).build();
-    }
 
 }

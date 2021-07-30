@@ -170,7 +170,50 @@ public class transactionControllers {
                 transactionList.add(txn);
                 id++;
             }
+            con = null;
+            db.disconnectDB();
 
+            return new transactionListModel(page, transactionList);
+
+        } catch (Exception e){
+
+        }
+        return new transactionListModel();
+    }
+
+    public transactionListModel transactionListByCategory(Integer account_id, Integer page, String category){
+        try {
+            if(category.trim().equals("")){
+                return getAllTransactions(account_id, page);
+            }
+            category = category.trim();
+            String sqlTemplate = "select categoryname, expensetype, amount, description, timestamp from transaction as t inner join transactionview as tv on t.transactionview_id = tv.transactionview_id where account_id = ? and categoryname = ? offset <offset> limit 5;";
+            int offsetPage = (page-1) * 5;
+            String selectTransactionSql = sqlTemplate.replace("<offset>", new String(String.valueOf(offsetPage)));
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+
+            PreparedStatement getTransactionQuery = con
+                    .prepareStatement(selectTransactionSql);
+            getTransactionQuery.setInt(1, account_id);
+            getTransactionQuery.setString(2, category);
+
+            ResultSet resultSet = getTransactionQuery.executeQuery();
+            List<transactionModel> transactionList = new ArrayList<>();
+            int id = 1;
+            while (resultSet.next()){
+                transactionModel txn = new transactionModel();
+                txn.setId(id);
+                txn.setCategoryName(resultSet.getString("categoryname"));
+                txn.setExpenseType(resultSet.getString("expensetype"));
+                txn.setAmount(resultSet.getInt("amount"));
+                txn.setDescription(resultSet.getString("description"));
+                txn.setTimestamp(resultSet.getTimestamp("timestamp"));
+                transactionList.add(txn);
+                id++;
+            }
+            con = null;
+            db.disconnectDB();
             return new transactionListModel(page, transactionList);
 
         } catch (Exception e){
