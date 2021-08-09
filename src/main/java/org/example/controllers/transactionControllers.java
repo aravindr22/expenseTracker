@@ -1,6 +1,8 @@
 package org.example.controllers;
 
 import org.example.database.dbConnector;
+import org.example.model.transaction.stats.transactionCategoryModel;
+import org.example.model.transaction.stats.trasnsactionIndividualStats;
 import org.example.model.transaction.transactionListModel;
 import org.example.model.transaction.transactionModel;
 import org.example.model.transaction.transactionStatsModel;
@@ -220,5 +222,45 @@ public class transactionControllers {
 
         }
         return new transactionListModel();
+    }
+
+    public trasnsactionIndividualStats getTransactionCategoryWiseStats(Integer account_id){
+        trasnsactionIndividualStats data = new trasnsactionIndividualStats();
+        try {
+            dbConnector db = new dbConnector();
+            Connection con = db.con;
+
+            PreparedStatement IncomeTransStats = con
+                    .prepareStatement("select categoryname, sum(amount) from transaction as t inner join transactionview as tv on t.transactionview_id = tv.transactionview_id where account_id = ? and expensetype = 'income' group by categoryname");
+            IncomeTransStats.setInt(1, account_id);
+
+            ResultSet resultSet = IncomeTransStats.executeQuery();
+            List<transactionCategoryModel> incomeList = new ArrayList<>();
+            while(resultSet.next()){
+                transactionCategoryModel txn = new transactionCategoryModel();
+                txn.setCategoryName(resultSet.getString(1));
+                txn.setAmount((resultSet.getInt(2)));
+                incomeList.add(txn);
+            }
+            PreparedStatement ExpenseTransStats = con
+                    .prepareStatement("select categoryname, sum(amount) from transaction as t inner join transactionview as tv on t.transactionview_id = tv.transactionview_id where account_id = ? and expensetype = 'expense' group by categoryname;");
+            ExpenseTransStats.setInt(1, account_id);
+
+            resultSet = ExpenseTransStats.executeQuery();
+            List<transactionCategoryModel> expenseList = new ArrayList<>();
+            while(resultSet.next()){
+                transactionCategoryModel txn = new transactionCategoryModel();
+                txn.setCategoryName(resultSet.getString(1));
+                txn.setAmount((resultSet.getInt(2)));
+                expenseList.add(txn);
+            }
+            data.setExpense(expenseList);
+            data.setIncome(incomeList);
+
+            return data;
+        } catch (Exception e){
+            e.printStackTrace();
+            return data;
+        }
     }
 }

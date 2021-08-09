@@ -67,5 +67,14 @@ public class transactionRoute {
         return Response.status(Response.Status.ACCEPTED).entity(transactionC.getTransactionStats(account_id)).build();
     }
 
+    @Path("/transactionstats")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTransactionStats(@Context HttpHeaders httpHeaders){
+        authHelper authH = new authHelper();
+        int account_id = authH.decodeAccountID(httpHeaders.getHeaderString("Authorization"));
+        transactionControllers transactionC = new transactionControllers();
+        return  Response.status(200).entity(transactionC.getTransactionCategoryWiseStats(account_id)).build();
+    }
 
 }
